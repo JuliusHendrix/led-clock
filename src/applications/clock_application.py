@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import sys
 import numpy as np
+from datetime import datetime
+from threading import Thread, Lock
 import time
 
 
@@ -12,10 +14,10 @@ src_dir = os.path.join(root_dir, "src")
 
 sys.path.append(src_dir)
 
-from application_abc import ApplicationABC
+from .application_abc import ApplicationABC
 from matrices.matrix_abc import MatrixABC
 from patterns.string.string_converter import StringConverter
-from patterns.string.fonts.minecraft_font import MinecraftFont
+from patterns.string.fonts.clock_font import ClockFont
 
 
 class ClockApplication(ApplicationABC):
@@ -23,4 +25,62 @@ class ClockApplication(ApplicationABC):
         super().__init__()
 
         self.matrix = matrix
-        self.string_converter = StringConverter(MinecraftFont())
+        self.string_converter = StringConverter(ClockFont())
+
+        self.refresh_rate = 1  # Hz
+        self.clock_thread = Thread(target=self.clock_loop)
+        self.thread_running = False
+        self.thread_stop_request = False
+        self.thread_mutex = Lock()
+
+    def update_time(self) -> None:
+        current_time_string = datetime.now().strftime("%H:%M")
+
+        print(current_time_string)
+
+        time_string_array = self.string_converter.get_string_array(
+            current_time_string, (255, 255, 255)
+        )
+
+        full_array = np.zeros((16, 32, 3))
+        full_array[1:15, :, :] = time_string_array
+
+        self.matrix.queue_array(full_array)
+
+    def clock_loop(self):
+        next_call = time.time()
+        stop_request = False
+        while not stop_request:
+            with self.thread_mutex:
+                stop_request = self.thread_stop_request
+            self.update_time()
+            next_call = next_call + 1
+            print(next_call)
+            time.sleep(next_call - time.time())
+
+    def start(self) -> bool:
+        if self.thread_running:
+            return False
+
+        self.clock_thread.start()
+        self.thread_running = True
+
+        return True
+
+    def stop(self) -> bool:
+        if not self.thread_running:
+            return False
+
+        print("stopping thread")
+
+        with self.thread_mutex:
+            self.thread_stop_request = True
+
+        print("waiting to join...")
+
+        self.clock_thread.join()
+
+        print("done")
+        self.thread_stop_request = False
+
+        return True

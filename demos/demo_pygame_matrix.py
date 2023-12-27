@@ -13,30 +13,23 @@ src_dir = os.path.join(root_dir, "src")
 sys.path.append(src_dir)
 
 from matrices.opencv_matrix import OpenCVMatrix
-from patterns.string.string_converter import StringConverter
-from patterns.string.fonts.minecraft_font import MinecraftFont
+from applications.clock_application import ClockApplication
 
 
 def main():
     matrix = OpenCVMatrix(pixels_per_element=25, matrix_size=(16, 32))
     time.sleep(0.1)
 
-    font = MinecraftFont()
-    string_converter = StringConverter(font)
+    clock_app = ClockApplication(matrix)
+    clock_app.start()
 
-    test_string_array = string_converter.get_string_array("17:39", (255, 20, 147))
+    for _ in range(120):
+        matrix.show_queued_array()
+        time.sleep(1)
 
-    frame = np.zeros(shape=(16, 32, 3))
+    clock_app.stop()
 
-    frame[4:11, 2:31, :] = test_string_array
-
-    matrix.display_array(frame)
-    time.sleep(5)
-
-    # for _ in range(10):
-    #     random_arr = np.random.randint(0, 256, size=(16, 32, 3))
-    #     matrix.display_array(random_arr)
-    #     time.sleep(1)
+    time.sleep(1)
 
 
 if __name__ == "__main__":

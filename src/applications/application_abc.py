@@ -2,8 +2,8 @@ from abc import ABC
 
 
 class ApplicationABC(ABC):
-    def start(self) -> None:
+    def start(self) -> bool:
         raise NotImplementedError()
 
-    def stop(self) -> None:
+    def stop(self) -> bool:
         raise NotImplementedError()

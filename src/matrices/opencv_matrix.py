@@ -17,12 +17,12 @@ class OpenCVMatrix(MatrixABC):
         )
 
         # create black window
-        self.display_array(np.zeros(self.array_shape))
+        self.queued_array = np.zeros(self.array_shape)
 
     def get_matrix_size(self) -> tuple[int, int]:
         return self.matrix_size
 
-    def display_array(self, array: np.ndarray) -> bool:
+    def queue_array(self, array: np.ndarray) -> bool:
         if array.shape != self.array_shape:
             print("wrong array shape")
             return False
@@ -31,13 +31,15 @@ class OpenCVMatrix(MatrixABC):
             print("array not within (0, 255)")
             return False
 
-        im = cv2.resize(
+        self.queued_array = cv2.resize(
             array[:, :, ::-1].astype(np.uint8),  # BGR to RGB
             self.window_size,
             interpolation=cv2.INTER_NEAREST,
         )
 
-        cv2.imshow("OpenCV Matrix", im)
-        cv2.waitKey(100)
-
         return True
+
+    def show_queued_array(self) -> None:
+        print("show")
+        cv2.imshow("OpenCV Matrix", self.queued_array)
+        cv2.waitKey(100)
