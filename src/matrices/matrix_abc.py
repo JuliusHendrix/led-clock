@@ -6,5 +6,5 @@ class MatrixABC(ABC):
     def get_matrix_size(self) -> tuple[int, int]:
         raise NotImplementedError()
 
-    def queue_array(self, array: np.ndarray) -> bool:
+    def display_array(self, array: np.ndarray) -> None:
         raise NotImplementedError()

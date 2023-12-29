@@ -15,16 +15,16 @@ src_dir = os.path.join(root_dir, "src")
 sys.path.append(src_dir)
 
 from .application_abc import ApplicationABC
-from matrices.matrix_abc import MatrixABC
+from matrices.frame_manager import FrameManager
 from patterns.string.string_converter import StringConverter
 from patterns.string.fonts.clock_font import ClockFont
 
 
 class ClockApplication(ApplicationABC):
-    def __init__(self, matrix: MatrixABC) -> None:
+    def __init__(self, frame_manager: FrameManager) -> None:
         super().__init__()
 
-        self.matrix = matrix
+        self.frame_manager = frame_manager
         self.string_converter = StringConverter(ClockFont())
 
         self.refresh_rate = 1  # Hz
@@ -45,9 +45,9 @@ class ClockApplication(ApplicationABC):
         full_array = np.zeros((16, 32, 3))
         full_array[1:15, :, :] = time_string_array
 
-        self.matrix.queue_array(full_array)
+        self.frame_manager.queue_frame(full_array)
 
-    def clock_loop(self):
+    def clock_loop(self) -> None:
         next_call = time.time()
         stop_request = False
         while not stop_request:
@@ -71,16 +71,10 @@ class ClockApplication(ApplicationABC):
         if not self.thread_running:
             return False
 
-        print("stopping thread")
-
         with self.thread_mutex:
             self.thread_stop_request = True
 
-        print("waiting to join...")
-
         self.clock_thread.join()
-
-        print("done")
         self.thread_stop_request = False
 
         return True

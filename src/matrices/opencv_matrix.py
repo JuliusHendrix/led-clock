@@ -16,30 +16,23 @@ class OpenCVMatrix(MatrixABC):
             matrix_size[0] * pixels_per_element,
         )
 
-        # create black window
-        self.queued_array = np.zeros(self.array_shape)
-
     def get_matrix_size(self) -> tuple[int, int]:
         return self.matrix_size
 
-    def queue_array(self, array: np.ndarray) -> bool:
+    def display_array(self, array: np.ndarray) -> None:
         if array.shape != self.array_shape:
             print("wrong array shape")
-            return False
+            return
 
         if array.min() < 0 or array.max() > 255:
             print("array not within (0, 255)")
-            return False
+            return
 
-        self.queued_array = cv2.resize(
+        im = cv2.resize(
             array[:, :, ::-1].astype(np.uint8),  # BGR to RGB
             self.window_size,
             interpolation=cv2.INTER_NEAREST,
         )
 
-        return True
-
-    def show_queued_array(self) -> None:
-        print("show")
-        cv2.imshow("OpenCV Matrix", self.queued_array)
+        cv2.imshow("OpenCV Matrix", im)
         cv2.waitKey(100)
