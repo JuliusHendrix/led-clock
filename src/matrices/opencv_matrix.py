@@ -6,31 +6,22 @@ from .matrix_abc import MatrixABC
 
 class OpenCVMatrix(MatrixABC):
     def __init__(self, pixels_per_element: int, matrix_size: tuple[int, int]) -> None:
-        super().__init__()
+        super().__init__(matrix_size)
 
-        self.matrix_size = matrix_size
-        self.array_shape = (*self.matrix_size, 3)
-
-        self.window_size = (
+        self._window_size = (
             matrix_size[1] * pixels_per_element,
             matrix_size[0] * pixels_per_element,
         )
 
-    def get_matrix_size(self) -> tuple[int, int]:
-        return self.matrix_size
-
     def display_array(self, array: np.ndarray) -> None:
-        if array.shape != self.array_shape:
-            print("wrong array shape")
+        if not self._validate_array(array):
             return
 
-        if array.min() < 0 or array.max() > 255:
-            print("array not within (0, 255)")
-            return
+        scaled_array = self._scale_array_brightness(array)
 
         im = cv2.resize(
-            array[:, :, ::-1].astype(np.uint8),  # BGR to RGB
-            self.window_size,
+            scaled_array[:, :, ::-1].astype(np.uint8),  # BGR to RGB
+            self._window_size,
             interpolation=cv2.INTER_NEAREST,
         )
 
