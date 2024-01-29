@@ -54,28 +54,10 @@ class GamepadInputDecoder:
         self.gamepad.open(self.DEVICE_VENDOR_ID, self.DEVICE_PRODUCT_ID)
         self.gamepad.set_nonblocking(True)
 
-        # while True:
-        #     self.check_input()
-
-    def check_input(self) -> None:
-        report = self.gamepad.read(64)
-
-        if not report:
-            return
-
-        buttons_pressed = ","
-
-        for button, bitmap in self.button_bitmaps.items():
-            if report[bitmap.index] & bitmap.bitmap:
-                buttons_pressed += str(button) + ","
-        print(buttons_pressed)
-
-    # TODO: not always report, where check_input does have a report!
     def get_inputs(self) -> list[GamepadButtons]:
         report = self.gamepad.read(64)
 
         if not report:
-            print("no report")
             return []
 
         buttons_pressed = []

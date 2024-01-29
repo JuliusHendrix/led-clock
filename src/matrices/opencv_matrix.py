@@ -6,7 +6,7 @@ from .matrix_abc import MatrixABC
 
 class OpenCVMatrix(MatrixABC):
     def __init__(self, pixels_per_element: int, matrix_size: tuple[int, int]) -> None:
-        super().__init__(matrix_size)
+        super().__init__(matrix_size, 1)
 
         self._window_size = (
             matrix_size[1] * pixels_per_element,

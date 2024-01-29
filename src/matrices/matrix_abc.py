@@ -3,19 +3,28 @@ import numpy as np
 
 
 class MatrixABC(ABC):
-    def __init__(self, matrix_size: tuple[int, int]) -> None:
+    def __init__(self, matrix_size: tuple[int, int], max_brightness: float) -> None:
         super().__init__()
 
         self._matrix_size = matrix_size
         self._array_shape = (*self._matrix_size, 3)
-        self._brightness = 0.01
+
+        self._max_brightness = 1.0
+        if max_brightness >= 0 and max_brightness <= 1.0:
+            self._max_brightness = max_brightness
+        self._brightness = self._max_brightness
 
     def get_matrix_size(self) -> tuple[int, int]:
         return self._matrix_size
 
+    def set_max_brightness(self, max_brightness: float) -> None:
+        if max_brightness >= 0.0 and max_brightness <= 1.0:
+            self._max_brightness = max_brightness
+            self._brightness = max_brightness
+
     def set_brightness(self, brightness: float) -> None:
         if brightness >= 0.0 and brightness <= 1.0:
-            self._brightness = brightness
+            self._brightness = brightness * self._max_brightness
 
     def display_array(self, array: np.ndarray) -> None:
         raise NotImplementedError()

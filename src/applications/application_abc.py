@@ -33,7 +33,6 @@ class ApplicationABC(ABC):
                 stop_request = self._thread_stop_request
             self._update()
             next_call = next_call + self._period
-            print(next_call)
             time.sleep(next_call - time.time())
 
     def start(self) -> bool:
