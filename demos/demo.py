@@ -19,31 +19,29 @@ from inputs.gamepad_input_decoder import GamepadInputDecoder
 
 
 def main():
-    # gamepad_input_manager = GamepadInputDecoder()
+    gamepad_input_manager = GamepadInputDecoder()
 
-    # for _ in range(1000):
-    # gamepad_input_manager.check_input()
+    for _ in range(1000):
+        inputs = gamepad_input_manager.get_inputs()
+        print(inputs)
 
-    # inputs = gamepad_input_manager.get_inputs()
-    # print(inputs)
+        time.sleep(0.02)
 
-    # time.sleep(0.01)
+    # frame_manager = FrameManager(
+    #     OpenCVMatrix(pixels_per_element=25, matrix_size=(16, 32)), queue_size=10
+    # )
+    # time.sleep(0.1)
 
-    frame_manager = FrameManager(
-        OpenCVMatrix(pixels_per_element=25, matrix_size=(16, 32)), queue_size=10
-    )
-    time.sleep(0.1)
+    # clock_app = ClockApplication(frame_manager)
+    # clock_app.start()
 
-    clock_app = ClockApplication(frame_manager)
-    clock_app.start()
+    # for _ in range(5):
+    #     frame_manager.show_next_frame()
+    #     time.sleep(1)
 
-    for _ in range(120):
-        frame_manager.show_next_frame()
-        time.sleep(1)
+    # clock_app.stop()
 
-    clock_app.stop()
-
-    time.sleep(1)
+    # time.sleep(1)
 
 
 if __name__ == "__main__":
