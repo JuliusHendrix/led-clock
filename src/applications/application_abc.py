@@ -1,18 +1,6 @@
 from abc import ABC
-import os
-from pathlib import Path
-import sys
-from threading import Thread, Lock
+from threading import Thread
 import time
-
-# own modules
-script_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = str(Path(script_dir).parents[0])
-src_dir = os.path.join(root_dir, "src")
-
-sys.path.append(src_dir)
-
-from matrices.frame_manager import FrameManager
 
 
 class ApplicationABC(ABC):
@@ -23,14 +11,11 @@ class ApplicationABC(ABC):
         self._thread = Thread(target=self._clock_loop)
         self._thread_running = False
         self._thread_stop_request = False
-        self._thread_mutex = Lock()
 
     def _clock_loop(self) -> None:
         next_call = time.time()
         stop_request = False
-        while not stop_request:
-            with self._thread_mutex:
-                stop_request = self._thread_stop_request
+        while not self._thread_stop_request:
             self._update()
             next_call = next_call + self._period
             time.sleep(next_call - time.time())
@@ -48,8 +33,7 @@ class ApplicationABC(ABC):
         if not self._thread_running:
             return False
 
-        with self._thread_mutex:
-            self._thread_stop_request = True
+        self._thread_stop_request = True
 
         self._thread.join()
         self._thread_stop_request = False

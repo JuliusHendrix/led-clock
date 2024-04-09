@@ -34,5 +34,4 @@ class LEDMatrix(MatrixABC):
 
         scaled_array = self._scale_array_brightness(array)
         strip = self._array_to_strip(scaled_array)
-        print(f"{strip.dtype = }")
         self._pixels[:] = strip

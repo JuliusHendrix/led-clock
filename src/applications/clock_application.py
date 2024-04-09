@@ -7,9 +7,7 @@ from datetime import datetime
 
 # own modules
 script_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = str(Path(script_dir).parents[0])
-src_dir = os.path.join(root_dir, "src")
-
+src_dir = str(Path(script_dir).parents[0])
 sys.path.append(src_dir)
 
 from .application_abc import ApplicationABC
