@@ -11,7 +11,7 @@ MATRIX_SHAPE = (16, 32)
 
 class LEDMatrix(MatrixABC):
     def __init__(self) -> None:
-        super().__init__(MATRIX_SHAPE, 0.05)
+        super().__init__(MATRIX_SHAPE, 0.1)
 
         self._number_of_pixels = np.prod(MATRIX_SHAPE)
         self._pixels = neopixel.NeoPixel(PIN, self._number_of_pixels)
