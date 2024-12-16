@@ -11,16 +11,16 @@ src_dir = str(Path(script_dir).parents[0])
 sys.path.append(src_dir)
 
 from .application_abc import ApplicationABC
-from matrices.frame_manager import FrameManager
+from frame_displayers.frame_displayer_abc import FrameDisplayerABC
 from patterns.string.string_converter import StringConverter
 from patterns.string.fonts.clock_font import ClockFont
 
 
 class ClockApplication(ApplicationABC):
-    def __init__(self, frame_manager: FrameManager) -> None:
+    def __init__(self, frame_displayer: FrameDisplayerABC) -> None:
         super().__init__(2)
 
-        self.frame_manager = frame_manager
+        self.frame_displayer = frame_displayer
         self.string_converter = StringConverter(ClockFont())
 
         self.morning_color = (255, 103, 0)
@@ -68,4 +68,4 @@ class ClockApplication(ApplicationABC):
         full_array = np.zeros((16, 32, 3))
         full_array[1:15, :, :] = time_string_array
 
-        self.frame_manager.queue_frame(full_array)
+        self.frame_displayer.queue_frame(full_array)

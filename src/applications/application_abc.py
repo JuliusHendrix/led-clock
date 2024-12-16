@@ -8,13 +8,12 @@ class ApplicationABC(ABC):
         super().__init__()
 
         self._period = 1 / refresh_rate
-        self._thread = Thread(target=self._clock_loop)
+        self._thread = Thread(target=self._thread_loop)
         self._thread_running = False
         self._thread_stop_request = False
 
-    def _clock_loop(self) -> None:
+    def _thread_loop(self) -> None:
         next_call = time.time()
-        stop_request = False
         while not self._thread_stop_request:
             self._update()
             next_call = next_call + self._period
